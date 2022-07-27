@@ -24,9 +24,3 @@ class MobileView(APIView):
         if serializer.is_valid():
             Mobiles.objects.create(**serializer.validated_data)
             return Response(data=serializer.data)
-
-
-
-
-        #name, category(veg or nonveg), price
-        #model dishes
