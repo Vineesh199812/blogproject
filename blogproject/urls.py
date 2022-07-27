@@ -17,5 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from blogapi import views
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path("oxygen/mobiles",views.MobileView.as_view()),
 ]

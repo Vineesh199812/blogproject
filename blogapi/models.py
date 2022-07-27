@@ -47,3 +47,6 @@ class Mobiles(models.Model):
 # non 5g mobiles >> qs=Mobiles.objects.all().exclude(band="5g")
 
 # count of 5g mobiles >> qs=Mobiles.objects.filter(band="5g").count()
+
+#to update or edit object ==>> get the id that we wanna update ==>> (ex)    qs=Blogs.objects.get(id=3)
+# then ==>> qs.content="hi all"  ==>> qs.save()  ==>> qs.content(to view the updated object)
