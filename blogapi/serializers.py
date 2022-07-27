@@ -9,3 +9,9 @@ class MobileSerializer(serializers.Serializer):
     band=serializers.CharField()
     display=serializers.CharField()
     processor=serializers.CharField()
+
+    def validate(self,data):
+        cost=data.get("price")
+        if cost<0:
+            raise serializers.ValidationError("invalid price")
+        return data

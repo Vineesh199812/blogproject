@@ -19,4 +19,5 @@ from blogapi import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("oxygen/mobiles",views.MobileView.as_view()),
+    path("oxygen/mobiles/<int:id>",views.MobileDetailsView.as_view()),
 ]
