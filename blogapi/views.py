@@ -6,7 +6,7 @@ from django.shortcuts import render
 from blogapi.models import Mobiles
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from blogapi.serializers import MobileSerializer
+from blogapi.serializers import MobileSerializer,MobileModelSerializer
 from rest_framework import status
 
 #url: localhost:8000/oxygen/mobiles/
@@ -69,3 +69,44 @@ class MobileDetailsView(APIView):
             return Response({"msg":"doesn't exist"},status=status.HTTP_404_NOT_FOUND)
 
 #model serializer
+
+class MobileModelView(APIView):
+    def get(self,request,*args,**kwargs):
+        qs=Mobiles.objects.all()
+        serializer=MobileModelSerializer(qs,many=True)
+        return Response(data=serializer.data)
+    def post(self,request,*args,**kwargs):
+        serializer=MobileModelSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(data=serializer.errors)
+
+class MobileDetailModelView(APIView):
+    def get(self,req,*args,**kwargs):
+        id=kwargs.get("id")
+        try:
+            qs=Mobiles.objects.get(id=id)
+            serializer=MobileModelSerializer(qs)
+            return Response(data=serializer.data)
+        except:
+            return Response({"msg":"doesn't exist"},status=status.HTTP_404_NOT_FOUND)
+    def put(self,req,*args,**kwargs):
+        id=kwargs.get("id")
+        try:
+            instance=Mobiles.objects.get(id=id)
+            serializer=MobileModelSerializer(data=req.data,instance=instance)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(data=serializer.data)
+            else:
+                return Response(data=serializer.errors)
+        except:
+            return Response({"msg":"doesn't exist"},status=status.HTTP_404_NOT_FOUND)
+    def delete(self,req,*args,**kwargs):
+        id=kwargs.get("id")
+        qs=Mobiles.objects.get(id=id)
+        qs.delete()
+        return Response({"msg":"deleted"})
+

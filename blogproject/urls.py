@@ -18,6 +18,8 @@ from django.urls import path
 from blogapi import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("oxygen/mobiles",views.MobileView.as_view()),
-    path("oxygen/mobiles/<int:id>",views.MobileDetailsView.as_view()),
+    path("api/v1/oxygen/mobiles",views.MobileView.as_view()),
+    path("api/v1/oxygen/mobiles/<int:id>",views.MobileDetailsView.as_view()),
+    path("api/v2/oxygen/mobiles",views.MobileModelView.as_view()),
+    path("api/v2/oxygen/mobiles/<int:id>",views.MobileDetailModelView.as_view()),
 ]
