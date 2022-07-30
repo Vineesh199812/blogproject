@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from blogapi import views
+from rest_framework.routers import DefaultRouter
+router=DefaultRouter()
+router.register("api/v3/oxygen/mobiles",views.MobilesViewSetView,basename="mobiles")
+router.register("api/v4/oxygen/mobiles",views.MobilesModelViewSetView,basename="modelmobiles")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/v1/oxygen/mobiles",views.MobileView.as_view()),
     path("api/v1/oxygen/mobiles/<int:id>",views.MobileDetailsView.as_view()),
     path("api/v2/oxygen/mobiles",views.MobileModelView.as_view()),
     path("api/v2/oxygen/mobiles/<int:id>",views.MobileDetailModelView.as_view()),
-]
+]+router.urls
