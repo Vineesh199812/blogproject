@@ -20,6 +20,7 @@ from rest_framework.routers import DefaultRouter
 router=DefaultRouter()
 router.register("api/v3/oxygen/mobiles",views.MobilesViewSetView,basename="mobiles")
 router.register("api/v4/oxygen/mobiles",views.MobilesModelViewSetView,basename="modelmobiles")
+router.register("api/v5/account/register",views.UserRegistrationView,basename="registration")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

@@ -6,8 +6,9 @@ from django.shortcuts import render
 from blogapi.models import Mobiles
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from blogapi.serializers import MobileSerializer,MobileModelSerializer
+from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer
 from rest_framework import status,viewsets
+from django.contrib.auth.models import User
 
 #url: localhost:8000/oxygen/mobiles/
 #get: list all mobiles
@@ -151,3 +152,8 @@ class MobilesViewSetView(viewsets.ViewSet):
 class MobilesModelViewSetView(viewsets.ModelViewSet):
     serializer_class = MobileModelSerializer
     queryset = Mobiles.objects.all()
+
+
+class UserRegistrationView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

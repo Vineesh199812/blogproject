@@ -2,6 +2,7 @@
 
 from rest_framework import serializers
 from blogapi.models import Mobiles
+from django.contrib.auth.models import User
 
 class MobileSerializer(serializers.Serializer):
     id=serializers.CharField(read_only=True)
@@ -33,3 +34,16 @@ class MobileModelSerializer(serializers.ModelSerializer):
         if price<0:
             raise serializers.ValidationError("invalid_price")
         return data
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=[
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password"
+        ]
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
