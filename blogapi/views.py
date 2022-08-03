@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer
 from rest_framework import status,viewsets
 from django.contrib.auth.models import User
+from rest_framework import authentication,permissions
 
 #url: localhost:8000/oxygen/mobiles/
 #get: list all mobiles
@@ -150,6 +151,9 @@ class MobilesViewSetView(viewsets.ViewSet):
 
 #modelViewset
 class MobilesModelViewSetView(viewsets.ModelViewSet):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
     serializer_class = MobileModelSerializer
     queryset = Mobiles.objects.all()
 
