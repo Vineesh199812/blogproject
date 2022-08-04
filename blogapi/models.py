@@ -2,7 +2,7 @@ from django.db import models
 
 
 # Create your models here.
-
+from django.contrib.auth.models import User
 
 class Blogs(models.Model):
     title = models.CharField(max_length=50)
@@ -23,6 +23,24 @@ class Mobiles(models.Model):
 
     def __str__(self):
         return self.name
+
+class Reviews(models.Model):
+    author=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ForeignKey(Mobiles,on_delete=models.CASCADE)
+    review=models.CharField(max_length=120)
+    rating=models.PositiveIntegerField()
+    date=models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.review
+
+class Carts(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ForeignKey(Mobiles,on_delete=models.CASCADE)
+    date=models.DateField(auto_now_add=True)
+
+    #migrations,migrate  add to cart   (work)
+
 
 # orm query for creating a resource ==>
 # modelname.objects.create(field1=value1,field2=value2.........)
@@ -50,3 +68,7 @@ class Mobiles(models.Model):
 
 #to update or edit object ==>> get the id that we wanna update ==>> (ex)    qs=Blogs.objects.get(id=3)
 # then ==>> qs.content="hi all"  ==>> qs.save()  ==>> qs.content(to view the updated object)
+
+#user.reviews_set.create(product=mob,review='good',rating=4)
+
+#to list reviews ==> qs=Reviews.objects.filter(auther=user) or user.reviews_set.all()
