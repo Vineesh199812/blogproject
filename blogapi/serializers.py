@@ -1,7 +1,7 @@
 
 
 from rest_framework import serializers
-from blogapi.models import Mobiles
+from blogapi.models import Mobiles,Reviews
 from django.contrib.auth.models import User
 
 class MobileSerializer(serializers.Serializer):
@@ -47,3 +47,17 @@ class UserSerializer(serializers.ModelSerializer):
         ]
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+#api/v6/oxygen/mobiles/{pid}/add_review
+#method post
+#data ={rating:4,review:"gd"}
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Reviews
+        fields=["review","rating"]
+
+    def create(self, validated_data):
+        user=self.context.get("user")
+        product=self.context.get("product")
+        return Reviews.objects.create(author=user,product=product,**validated_data)

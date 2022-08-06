@@ -3,13 +3,14 @@ from django.shortcuts import render
 # Create your views here.
 
 
-from blogapi.models import Mobiles
+from blogapi.models import Mobiles,Reviews
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer
+from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer,ReviewSerializer
 from rest_framework import status,viewsets
 from django.contrib.auth.models import User
 from rest_framework import authentication,permissions
+from rest_framework.decorators import action
 
 #url: localhost:8000/oxygen/mobiles/
 #get: list all mobiles
@@ -158,6 +159,23 @@ class MobilesModelViewSetView(viewsets.ModelViewSet):
     queryset = Mobiles.objects.all()
 
 
+    @action(methods=["post"],detail=True)
+    def add_review(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        mobile=Mobiles.objects.get(id=id)
+        user=request.user
+        serializer=ReviewSerializer(data=request.data,context={"user":user,"product":mobile})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(data=serializer.errors)
+
+
 class UserRegistrationView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+#class ReviewView(viewsets.ModelViewSet):
+    #serializer_class = ReviewSerializer
+    #queryset = Reviews.objects.all()

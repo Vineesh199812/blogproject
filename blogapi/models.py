@@ -3,6 +3,7 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 class Blogs(models.Model):
     title = models.CharField(max_length=50)
@@ -24,12 +25,16 @@ class Mobiles(models.Model):
     def __str__(self):
         return self.name
 
+#
 class Reviews(models.Model):
     author=models.ForeignKey(User,on_delete=models.CASCADE)
     product=models.ForeignKey(Mobiles,on_delete=models.CASCADE)
     review=models.CharField(max_length=120)
-    rating=models.PositiveIntegerField()
+    rating=models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
     date=models.DateField(auto_now_add=True)
+
+    class Meta:
+        unique_together=("author","product")
 
     def __str__(self):
         return self.review
@@ -39,7 +44,6 @@ class Carts(models.Model):
     product=models.ForeignKey(Mobiles,on_delete=models.CASCADE)
     date=models.DateField(auto_now_add=True)
 
-    #migrations,migrate  add to cart   (work)
 
 
 # orm query for creating a resource ==>
@@ -71,4 +75,4 @@ class Carts(models.Model):
 
 #user.reviews_set.create(product=mob,review='good',rating=4)
 
-#to list reviews ==> qs=Reviews.objects.filter(auther=user) or user.reviews_set.all()
+#to list reviews ==> qs=Reviews.objects.filter(author=user) or user.reviews_set.all()
