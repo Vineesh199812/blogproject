@@ -6,7 +6,7 @@ from django.shortcuts import render
 from blogapi.models import Mobiles,Reviews
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer,ReviewSerializer
+from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer,ReviewSerializer,CartSerializer
 from rest_framework import status,viewsets
 from django.contrib.auth.models import User
 from rest_framework import authentication,permissions
@@ -171,6 +171,33 @@ class MobilesModelViewSetView(viewsets.ModelViewSet):
         else:
             return Response(data=serializer.errors)
 
+    #api/v4/oxygen/mobiles/{pid}/get_reviews
+    @action(methods=["get"],detail=True)
+    def get_reviews(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        mobile=Mobiles.objects.get(id=id)
+        reviews=mobile.reviews_set.all()
+        serializer=ReviewSerializer(reviews,many=True)
+        return Response(data=serializer.data)
+
+    @action(methods=["post"],detail=True)
+    def add_to_cart(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        mobile=Mobiles.objects.get(id=id)
+        user=request.user
+        serializer=CartSerializer(data=request.data,context={"user":user,"product":mobile})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(data=serializer.errors)
+    @action(methods=["get"],detail=True)
+    def view_cart(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        user=User.objects.get(id=id)
+        cart=user.carts_set.all()
+        serializer=CartSerializer(cart,many=True)
+        return Response(data=serializer.data)
 
 class UserRegistrationView(viewsets.ModelViewSet):
     queryset = User.objects.all()

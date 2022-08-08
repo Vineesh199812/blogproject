@@ -24,6 +24,16 @@ class Mobiles(models.Model):
 
     def __str__(self):
         return self.name
+    def average_rating(self):
+        reviews=self.reviews_set.all()
+        if reviews:
+            ratings=[rv.rating for rv in reviews]
+            total=sum(ratings)
+            return total/len(reviews)
+        else:
+            return 0
+    def total_reviews(self):
+        return self.reviews_set.all().count()
 
 #
 class Reviews(models.Model):
