@@ -1,7 +1,7 @@
 
 
 from rest_framework import serializers
-from blogapi.models import Mobiles,Reviews,Carts
+from blogapi.models import Mobiles,Reviews,Carts,Orders
 from django.contrib.auth.models import User
 
 class MobileSerializer(serializers.Serializer):
@@ -71,11 +71,36 @@ class ReviewSerializer(serializers.ModelSerializer):
 class CartSerializer(serializers.ModelSerializer):
     user=UserSerializer(read_only=True)
     product=serializers.CharField(read_only=True)
+    date=serializers.CharField(read_only=True)
+    status=serializers.CharField(read_only=True)
     class Meta:
         model=Carts
-        fields=["user","product"]
+        fields=[
+                "user",
+                "product",
+                "date",
+                "status"
+        ]
 
     def create(self, validated_data):
         user=self.context.get("user")
         product=self.context.get("product")
         return Carts.objects.create(user=user,product=product,**validated_data)
+
+class OrderSerializer(serializers.ModelSerializer):
+    user=UserSerializer(read_only=True)
+    product=serializers.CharField(read_only=True)
+    date=serializers.CharField(read_only=True)
+    status=serializers.CharField(read_only=True)
+    class Meta:
+        model=Orders
+        fields=[
+            "user",
+            "product",
+            "date",
+            "status"
+        ]
+    def create(self, validated_data):
+        user=self.context.get("user")
+        product=self.context.get("product")
+        return Orders.objects.create(user=user,product=product,**validated_data)

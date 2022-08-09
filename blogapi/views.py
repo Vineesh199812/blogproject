@@ -3,10 +3,10 @@ from django.shortcuts import render
 # Create your views here.
 
 
-from blogapi.models import Mobiles,Reviews
+from blogapi.models import Mobiles,Reviews,Carts
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer,ReviewSerializer,CartSerializer
+from blogapi.serializers import MobileSerializer,MobileModelSerializer,UserSerializer,ReviewSerializer,CartSerializer,OrderSerializer
 from rest_framework import status,viewsets
 from django.contrib.auth.models import User
 from rest_framework import authentication,permissions
@@ -191,13 +191,31 @@ class MobilesModelViewSetView(viewsets.ModelViewSet):
             return Response(data=serializer.data)
         else:
             return Response(data=serializer.errors)
-    @action(methods=["get"],detail=True)
-    def view_cart(self,request,*args,**kwargs):
+    @action(methods=["post"],detail=True)
+    def order(self,request,*args,**kwargs):
+        user=request.user
         id=kwargs.get("pk")
-        user=User.objects.get(id=id)
-        cart=user.carts_set.all()
-        serializer=CartSerializer(cart,many=True)
-        return Response(data=serializer.data)
+        mobile=Mobiles.objects.get(id=id)
+        serializer=OrderSerializer(data=request.data,context={"user":user,"product":mobile})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data)
+        else:
+            return Response(data=serializer.errors)
+
+    # @action(methods=["get"],detail=True)
+    # def view_cart(self,request,*args,**kwargs):
+    #     id=kwargs.get("pk")
+    #     user=User.objects.get(id=id)
+    #     cart=user.carts_set.all()
+    #     serializer=CartSerializer(cart,many=True)       *we don't have to use this here coz cart is not only related
+    #     return Response(data=serializer.data)            - to Mobiles field instead we create a class with token authentication
+
+    # @action(methods=["get"],detail=False)
+    # def my_cart(self,request,*args,**kwargs):
+    #    qs=Carts.objects.filter(user=request.user)
+    #    serializer=CartSerializer(qs,many=True)
+    #    return Response(data=serializer.data)
 
 class UserRegistrationView(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -206,3 +224,12 @@ class UserRegistrationView(viewsets.ModelViewSet):
 #class ReviewView(viewsets.ModelViewSet):
     #serializer_class = ReviewSerializer
     #queryset = Reviews.objects.all()
+
+class CartsView(viewsets.ModelViewSet):
+    serializer_class = CartSerializer
+    queryset = Carts.objects.all()
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Carts.objects.filter(user=self.request.user)

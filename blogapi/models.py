@@ -53,6 +53,22 @@ class Carts(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     product=models.ForeignKey(Mobiles,on_delete=models.CASCADE)
     date=models.DateField(auto_now_add=True)
+    options=(
+        ("incart","incart"),
+        ("order-placed","order-placed"),
+        ("cancelled","cancelled")
+    )
+    status=models.CharField(max_length=120,choices=options,default="incart")
+class Orders(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    product=models.ForeignKey(Mobiles,on_delete=models.CASCADE)
+    date=models.DateTimeField(auto_now_add=True)
+    options=(
+        ("order_placed","incart"),
+        ("order_placed","order_placed"),
+        ("cancelled","cancelled")
+    )
+    status=models.CharField(max_length=120,choices=options,default="order_placed")
 
 
 
