@@ -152,7 +152,7 @@ class MobilesViewSetView(viewsets.ViewSet):
 
 #modelViewset
 class MobilesModelViewSetView(viewsets.ModelViewSet):
-    authentication_classes = [authentication.TokenAuthentication]
+    #authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     serializer_class = MobileModelSerializer
@@ -185,6 +185,14 @@ class MobilesModelViewSetView(viewsets.ModelViewSet):
         id=kwargs.get("pk")
         mobile=Mobiles.objects.get(id=id)
         user=request.user
+        # carts=Carts.objects.filter(user=user,product=mobile)   >> to add quantity wise increase in  cart
+        # if carts:
+        #     object=carts(0)
+        #     object.quantity+=1
+        #     object.save()
+        #     serializer=CartSerializer(object)
+        #     return Response(data=serializer.data)
+        # else:
         serializer=CartSerializer(data=request.data,context={"user":user,"product":mobile})
         if serializer.is_valid():
             serializer.save()
@@ -228,7 +236,7 @@ class UserRegistrationView(viewsets.ModelViewSet):
 class CartsView(viewsets.ModelViewSet):
     serializer_class = CartSerializer
     queryset = Carts.objects.all()
-    authentication_classes = [authentication.TokenAuthentication]
+    #authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):

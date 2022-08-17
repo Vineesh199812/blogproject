@@ -18,6 +18,7 @@ from django.urls import path
 from blogapi import views
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 router=DefaultRouter()
 router.register("api/v3/oxygen/mobiles",views.MobilesViewSetView,basename="mobiles")
 router.register("api/v4/oxygen/mobiles",views.MobilesModelViewSetView,basename="modelmobiles")
@@ -29,5 +30,7 @@ urlpatterns = [
     path("api/v1/oxygen/mobiles/<int:id>",views.MobileDetailsView.as_view()),
     path("api/v2/oxygen/mobiles",views.MobileModelView.as_view()),
     path("api/v2/oxygen/mobiles/<int:id>",views.MobileDetailModelView.as_view()),
-    path("accounts/token",obtain_auth_token),
+    #path("accounts/token",obtain_auth_token),
+    path("accounts/token",TokenObtainPairView.as_view()),
+    path("accounts/token/refresh",TokenRefreshView.as_view())
 ]+router.urls
